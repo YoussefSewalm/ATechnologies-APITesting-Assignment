@@ -1,0 +1,1810 @@
+{
+	"info": {
+		"_postman_id": "08c75715-83ff-4f72-94fc-0b9fdc2ec7d0",
+		"name": "ATechnologies_Assignment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39348830"
+	},
+	"item": [
+		{
+			"name": "Manage Contacts",
+			"item": [
+				{
+					"name": "Get Bearer Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData=pm.response.json();\r",
+									"pm.collectionVariables.set(\"Token\",jsonData.token);\r",
+									"\r",
+									"pm.test(\"Response time is less than 3sec\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"{{UserName}}\",\r\n  \"password\": \"{{Password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Url}}/Auth/login",
+							"host": [
+								"{{Url}}"
+							],
+							"path": [
+								"Auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create New Contact",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"var UserName = pm.collectionVariables.get(\"UserName\");\r",
+									"\r",
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verify Contact Username POST\", function () {\r",
+									"    pm.expect(jsonData.username).to.eql(UserName);\r",
+									"});\r",
+									"pm.test(\"Response time is less than 3sec\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+									"});\r",
+									"var template = `\r",
+									"<style type=\"text/css\">\r",
+									"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+									"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+									"    .tftable tr {background-color:#ffffff;}\r",
+									"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+									"    .tftable tr:hover {background-color:#e0ffff;}\r",
+									"</style>\r",
+									"\r",
+									"<table class=\"tftable\" border=\"1\">\r",
+									"    <tr>\r",
+									"        <th>ID</th>\r",
+									"        <th>First Name</th>\r",
+									"        <th>Last Name</th>\r",
+									"        <th>Email</th>\r",
+									"        <th>Phone</th>\r",
+									"        <th>Balance</th>\r",
+									"        <th>Username</th>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>{{response.id}}</td>\r",
+									"        <td>{{response.firstName}}</td>\r",
+									"        <td>{{response.lastName}}</td>\r",
+									"        <td>{{response.email}}</td>\r",
+									"        <td>{{response.phone}}</td>\r",
+									"        <td>{{response.balance}}</td>\r",
+									"        <td>{{response.username}}</td>\r",
+									"    </tr>\r",
+									"</table>\r",
+									"`;\r",
+									"\r",
+									"function constructVisualizerPayload() {\r",
+									"    return { response: pm.response.json() }\r",
+									"}\r",
+									"\r",
+									"pm.visualizer.set(template, constructVisualizerPayload());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var Random_Email = pm.collectionVariables.replaceIn(\"{{$randomEmail}}\");\r",
+									"pm.collectionVariables.set(\"RandomEmail\",Random_Email);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{Token}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\r\n        \"firstName\": \"youssef1\",\r\n        \"lastName\": \"ahmed12\",\r\n        \"email\":\"{{RandomEmail}}\",\r\n        \"phone\": \"0122405\",\r\n        \"username\": \"youssef1000\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Url}}/Contacts",
+							"host": [
+								"{{Url}}"
+							],
+							"path": [
+								"Contacts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Contacts",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"random_email = pm.collectionVariables.get(\"RandomEmail\");\r",
+									"user_name = pm.collectionVariables.get(\"UserName\");\r",
+									"let Contacts_Array = jsonData;\r",
+									"let Emails_Array = Contacts_Array.map((emails) => emails.email);\r",
+									"contact_index = Emails_Array.indexOf(random_email);\r",
+									"pm.collectionVariables.set(\"contactID_1\",jsonData[contact_index].id);\r",
+									"contact_id = pm.collectionVariables.get(\"contactID_1\");\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verify Contact Details After GET All Contacts\", function () {\r",
+									"    pm.expect(jsonData[contact_index].username).to.eql(user_name);\r",
+									"    pm.expect(jsonData[contact_index].id).to.eql(contact_id);\r",
+									"\r",
+									"});\r",
+									"pm.test(\"Response time is less than 3sec\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{Token}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{Url}}/Contacts",
+							"host": [
+								"{{Url}}"
+							],
+							"path": [
+								"Contacts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Specific Contact By ID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"jsonData=pm.response.json();\r",
+									"user_name = pm.collectionVariables.get(\"UserName\");\r",
+									"contact_id = pm.collectionVariables.get(\"contactID_1\");\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verify Contact Details After GET Specific Contact\", function () {\r",
+									"    pm.expect(jsonData.username).to.eql(user_name);\r",
+									"    pm.expect(jsonData.id).to.eql(contact_id);\r",
+									"\r",
+									"});\r",
+									"pm.test(\"Response time is less than 3sec\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Url}}/Contacts/{{contactID_1}}",
+							"host": [
+								"{{Url}}"
+							],
+							"path": [
+								"Contacts",
+								"{{contactID_1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Contact",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{Token}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "   {\r\n        \"firstName\": \"{{FirstName_Updated}}\",\r\n        \"lastName\": \"{{LastName_Updated}}\",\r\n        \"email\":\"{{RandomEmail}}\",\r\n        \"phone\": \"{{Phone_Updated}}\",\r\n        \"username\": \"youssef10\",\r\n        \"balance\":{{Balance_Updated}}\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Url}}/Contacts/{{contactID_1}}",
+							"host": [
+								"{{Url}}"
+							],
+							"path": [
+								"Contacts",
+								"{{contactID_1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Updated Contact",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"var Balance_Updated = parseInt(pm.collectionVariables.get(\"Balance_Updated\"));\r",
+									"var FirstName_Updated = pm.collectionVariables.get(\"FirstName_Updated\");\r",
+									"var LastName_Updated = pm.collectionVariables.get(\"LastName_Updated\");\r",
+									"var Phone_Updated = pm.collectionVariables.get(\"Phone_Updated\");\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 3sec\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+									"});\r",
+									"pm.test(\"Verify Updated Balance with GET\", function () {\r",
+									"    pm.expect(jsonData.balance).to.eql(Balance_Updated);\r",
+									"});\r",
+									"pm.test(\"Verify Updated firstName with GET\", function () {\r",
+									"    pm.expect(jsonData.firstName).to.eql(FirstName_Updated);\r",
+									"});\r",
+									"pm.test(\"Verify Updated lastName with GET\", function () {\r",
+									"    pm.expect(jsonData.lastName).to.eql(LastName_Updated);\r",
+									"});\r",
+									"pm.test(\"Verify Updated Phone with GET\", function () {\r",
+									"    pm.expect(jsonData.phone).to.eql(Phone_Updated);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Url}}/Contacts/{{contactID_1}}",
+							"host": [
+								"{{Url}}"
+							],
+							"path": [
+								"Contacts",
+								"{{contactID_1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Contact",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{Token}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{Url}}/Contacts/{{contactID_1}}",
+							"host": [
+								"{{Url}}"
+							],
+							"path": [
+								"Contacts",
+								"{{contactID_1}}"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Deleted Contact After DELETE",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"var Balance_Updated = parseInt(pm.collectionVariables.get(\"Balance_Updated_2\"));\r",
+									"var contact_id = pm.collectionVariables.get(\"contactID_1\");\r",
+									"\r",
+									"pm.test(\"Response time is less than 3sec\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+									"});\r",
+									"pm.test(\"Verify Contact ID is Deleted\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Url}}/Contacts/{{contactID_1}}",
+							"host": [
+								"{{Url}}"
+							],
+							"path": [
+								"Contacts",
+								"{{contactID_1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Contact Balance",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.text();\r",
+									"\r",
+									"pm.test(\"Response time is less than 3s\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Status code name has string\", function () {\r",
+									"    pm.expect(pm.response.text()).to.be.eqls(\"Balance Updated\");\r",
+									"});\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{Token}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{Url}}/Contacts/tipup/?id={{contactID_1}}&amount={{Balance_Updated_2}}",
+							"host": [
+								"{{Url}}"
+							],
+							"path": [
+								"Contacts",
+								"tipup",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{contactID_1}}"
+								},
+								{
+									"key": "amount",
+									"value": "{{Balance_Updated_2}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Updated Contact After Changing Balance",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"var Balance_Updated = parseInt(pm.collectionVariables.get(\"Balance_Updated_2\"));\r",
+									"pm.collectionVariables.set(\"Final_Balance\",jsonData.balance);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 3sec\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+									"});\r",
+									"pm.test(\"Verify Updated Contact Balance with GET\", function () {\r",
+									"    pm.expect(jsonData.balance).to.eql(Balance_Updated);\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Url}}/Contacts/{{contactID_1}}",
+							"host": [
+								"{{Url}}"
+							],
+							"path": [
+								"Contacts",
+								"{{contactID_1}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Manage Invoices",
+			"item": [
+				{
+					"name": "Returning And Paying Invoice",
+					"item": [
+						{
+							"name": "Get Bearer Token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"jsonData=pm.response.json();\r",
+											"pm.collectionVariables.set(\"Token\",jsonData.token);\r",
+											"\r",
+											"pm.test(\"Response time is less than 3sec\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"username\": \"{{UserName}}\",\r\n  \"password\": \"{{Password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{Url}}/Auth/login",
+									"host": [
+										"{{Url}}"
+									],
+									"path": [
+										"Auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Invoice",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"var UserName = pm.collectionVariables.get(\"UserName\");\r",
+											"pm.collectionVariables.set(\"Invoice_ID\",jsonData.id);\r",
+											"var cost = parseFloat(pm.collectionVariables.get(\"Cost\"));\r",
+											"var discount= parseFloat(pm.collectionVariables.get(\"Discount\"));\r",
+											"var tax = parseFloat(pm.collectionVariables.get(\"Tax\"));\r",
+											"var TotalAmount = (cost*(1-discount/100))+tax;\r",
+											"var Profit = cost - tax;\r",
+											"pm.collectionVariables.set(\"Total_Amount\",TotalAmount);\r",
+											"pm.collectionVariables.set(\"Profit\",Profit);\r",
+											"\r",
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify Contact Username POST\", function () {\r",
+											"    pm.expect(jsonData.username).to.eql(UserName);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 3sec\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+											"});\r",
+											"pm.test(\"Verify TotalAmount Calculated\", function () {\r",
+											"    pm.expect(jsonData.totalAmount).to.eql(TotalAmount);\r",
+											"});\r",
+											"pm.test(\"Verify Profit Calculated\", function () {\r",
+											"    pm.expect(jsonData.totalProfit).to.eql(Profit);\r",
+											"});\r",
+											"\r",
+											"var template = `\r",
+											"<style type=\"text/css\">\r",
+											"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+											"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+											"    .tftable tr {background-color:#ffffff;}\r",
+											"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+											"    .tftable tr:hover {background-color:#e0ffff;}\r",
+											"</style>\r",
+											"\r",
+											"<table class=\"tftable\" border=\"1\">\r",
+											"    <tr>\r",
+											"        <th>ID</th>\r",
+											"        <th>First Name</th>\r",
+											"        <th>Last Name</th>\r",
+											"        <th>Email</th>\r",
+											"        <th>Phone</th>\r",
+											"        <th>Balance</th>\r",
+											"        <th>Username</th>\r",
+											"    </tr>\r",
+											"    <tr>\r",
+											"        <td>{{response.id}}</td>\r",
+											"        <td>{{response.firstName}}</td>\r",
+											"        <td>{{response.lastName}}</td>\r",
+											"        <td>{{response.email}}</td>\r",
+											"        <td>{{response.phone}}</td>\r",
+											"        <td>{{response.balance}}</td>\r",
+											"        <td>{{response.username}}</td>\r",
+											"    </tr>\r",
+											"</table>\r",
+											"`;\r",
+											"\r",
+											"function constructVisualizerPayload() {\r",
+											"    return { response: pm.response.json() }\r",
+											"}\r",
+											"\r",
+											"pm.visualizer.set(template, constructVisualizerPayload());"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var Random_Email = pm.collectionVariables.replaceIn(\"{{$randomEmail}}\");\r",
+											"pm.collectionVariables.set(\"RandomEmail\",Random_Email);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{Token}}",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"contactId\": \"{{contactID_1}}\",\r\n  \"createdBy\": \"youssef\",\r\n  \"cost\": {{Cost}},\r\n  \"discountPercentage\": {{Discount}},\r\n  \"taxAmount\": {{Tax}},\r\n  \"username\": \"youssef200\",\r\n  \"status\":-1\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{Url}}/Invoices",
+									"host": [
+										"{{Url}}"
+									],
+									"path": [
+										"Invoices"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET All Invoices",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 3sec\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+											"});\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{Token}}",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{Url}}/Invoices",
+									"host": [
+										"{{Url}}"
+									],
+									"path": [
+										"Invoices"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Verify Invoice Created",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"var UserName = pm.collectionVariables.get(\"UserName\");\r",
+											"var TotalAmount = pm.collectionVariables.get(\"Total_Amount\");\r",
+											"var Profit = pm.collectionVariables.get(\"Profit\");\r",
+											"var InvoiceID = pm.collectionVariables.get(\"Invoice_ID\");\r",
+											"var ContactID = pm.collectionVariables.get(\"contactID_1\");\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 3sec\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+											"});\r",
+											"pm.test(\"Verify Contact Username GET\", function () {\r",
+											"    pm.expect(jsonData.username).to.eql(UserName);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 3sec\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+											"});\r",
+											"pm.test(\"Verify Contact ID with GET\", function () {\r",
+											"    pm.expect(jsonData.contactId).to.eql(ContactID);\r",
+											"});\r",
+											"pm.test(\"Verify Invoice ID with GET\", function () {\r",
+											"    pm.expect(jsonData.id).to.eql(InvoiceID);\r",
+											"});\r",
+											"pm.test(\"Verify TotalAmount Calculated with GET\", function () {\r",
+											"    pm.expect(jsonData.totalAmount).to.eql(TotalAmount);\r",
+											"});\r",
+											"pm.test(\"Verify Profit Calculated with GET\", function () {\r",
+											"    pm.expect(jsonData.totalProfit).to.eql(Profit);\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{Token}}",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{Url}}/Invoices/{{Invoice_ID}}",
+									"host": [
+										"{{Url}}"
+									],
+									"path": [
+										"Invoices",
+										"{{Invoice_ID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Verify Contact Balance After Creating Invoice",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"var Final_Balance = parseFloat(pm.collectionVariables.get(\"Final_Balance\"));\r",
+											"var Total_Amount = parseFloat(pm.collectionVariables.get(\"Total_Amount\"));\r",
+											"var Balance_AfterInvoice = Final_Balance - (2 * Total_Amount);\r",
+											"pm.test(\"Response time is less than 3s\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Verify Contact Balance After Creating Invoice\", function () {\r",
+											"    pm.expect(jsonData.balance).to.eql(Balance_AfterInvoice);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Url}}/Contacts/{{contactID_1}}",
+									"host": [
+										"{{Url}}"
+									],
+									"path": [
+										"Contacts",
+										"{{contactID_1}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Return Invoice",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response time is less than 3s\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+											"});\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Verify Returning Invoice with PUT\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"Invoice returned successfully.\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"{{Invoice_ID}}\",\r\n    \"contactId\": \"{{contactID_1}}\",\r\n    \"createdBy\": \"youssef\",\r\n    \"cost\": 90,\r\n    \"discountPercentage\": 20,\r\n    \"taxAmount\": 10,\r\n    \"totalAmount\": 82,\r\n    \"totalProfit\": 80,\r\n    \"status\": 0,\r\n    \"createdDate\": \"2025-01-28T01:52:43.8202289Z\",\r\n    \"username\": \"youssef30\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{Url}}/Invoices/{{Invoice_ID}}",
+									"host": [
+										"{{Url}}"
+									],
+									"path": [
+										"Invoices",
+										"{{Invoice_ID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Verify Invoice Marked As Returned",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 3sec\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+											"});\r",
+											"pm.test(\"Verify Invoice Marked as returned\", function () {\r",
+											"    pm.expect(jsonData.status).to.be.eql(0);\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{Token}}",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{Url}}/Invoices/{{Invoice_ID}}",
+									"host": [
+										"{{Url}}"
+									],
+									"path": [
+										"Invoices",
+										"{{Invoice_ID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Verify Contact Balance After Returning Invoice",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"var Actual_Balance = parseFloat(pm.collectionVariables.get(\"Final_Balance\"));\r",
+											"\r",
+											"pm.test(\"Response time is less than 3s\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify Contact Balance After Returning Invoice\", function () {\r",
+											"    pm.expect(jsonData.balance).to.eql(Actual_Balance);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Url}}/Contacts/{{contactID_1}}",
+									"host": [
+										"{{Url}}"
+									],
+									"path": [
+										"Contacts",
+										"{{contactID_1}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST Verify Paying a Returned Invoice",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 3s\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+											"});\r",
+											"pm.test(\"Verify inability to pay a returned Invoice\", function () {\r",
+											"    pm.response.to.have.body(\"Cannot pay a returned invoice.\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"invoiceId\": \"{{Invoice_ID}}\",\r\n  \"amount\": {{Total_Amount}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{Url}}/Invoices/pay",
+									"host": [
+										"{{Url}}"
+									],
+									"path": [
+										"Invoices",
+										"pay"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Verify Contact Balance After Paying Invoice",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"var Final_Balance = parseFloat(pm.collectionVariables.get(\"Final_Balance\"));\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 3s\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify Contact Balance After Paying the Invoice\", function () {\r",
+											"    pm.expect(jsonData.balance).to.eql(Final_Balance);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Url}}/Contacts/{{contactID_1}}",
+									"host": [
+										"{{Url}}"
+									],
+									"path": [
+										"Contacts",
+										"{{contactID_1}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Verify Return Invoice After Paying",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response time is less than 3s\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+											"});\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Verify Returning Invoice After Paying with PUT\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"Cannot return a paid invoice.\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{Url}}/Invoices/{{Invoice_ID}}",
+									"host": [
+										"{{Url}}"
+									],
+									"path": [
+										"Invoices",
+										"{{Invoice_ID}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Paying Invoice",
+					"item": [
+						{
+							"name": "Get Bearer Token Copy",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"jsonData=pm.response.json();\r",
+											"pm.collectionVariables.set(\"Token\",jsonData.token);\r",
+											"\r",
+											"pm.test(\"Response time is less than 3sec\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"username\": \"{{UserName}}\",\r\n  \"password\": \"{{Password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{Url}}/Auth/login",
+									"host": [
+										"{{Url}}"
+									],
+									"path": [
+										"Auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Invoice",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"var UserName = pm.collectionVariables.get(\"UserName\");\r",
+											"pm.collectionVariables.set(\"Invoice_ID\",jsonData.id);\r",
+											"var cost = parseFloat(pm.collectionVariables.get(\"Cost\"));\r",
+											"var discount= parseFloat(pm.collectionVariables.get(\"Discount\"));\r",
+											"var tax = parseFloat(pm.collectionVariables.get(\"Tax\"));\r",
+											"var TotalAmount = (cost*(1-discount/100))+tax;\r",
+											"var Profit = cost - tax;\r",
+											"pm.collectionVariables.set(\"Total_Amount\",TotalAmount);\r",
+											"pm.collectionVariables.set(\"Profit\",Profit);\r",
+											"\r",
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify Contact Username POST\", function () {\r",
+											"    pm.expect(jsonData.username).to.eql(UserName);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 3sec\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+											"});\r",
+											"pm.test(\"Verify TotalAmount Calculated\", function () {\r",
+											"    pm.expect(jsonData.totalAmount).to.eql(TotalAmount);\r",
+											"});\r",
+											"pm.test(\"Verify Profit Calculated\", function () {\r",
+											"    pm.expect(jsonData.totalProfit).to.eql(Profit);\r",
+											"});\r",
+											"\r",
+											"var template = `\r",
+											"<style type=\"text/css\">\r",
+											"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+											"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+											"    .tftable tr {background-color:#ffffff;}\r",
+											"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+											"    .tftable tr:hover {background-color:#e0ffff;}\r",
+											"</style>\r",
+											"\r",
+											"<table class=\"tftable\" border=\"1\">\r",
+											"    <tr>\r",
+											"        <th>ID</th>\r",
+											"        <th>First Name</th>\r",
+											"        <th>Last Name</th>\r",
+											"        <th>Email</th>\r",
+											"        <th>Phone</th>\r",
+											"        <th>Balance</th>\r",
+											"        <th>Username</th>\r",
+											"    </tr>\r",
+											"    <tr>\r",
+											"        <td>{{response.id}}</td>\r",
+											"        <td>{{response.firstName}}</td>\r",
+											"        <td>{{response.lastName}}</td>\r",
+											"        <td>{{response.email}}</td>\r",
+											"        <td>{{response.phone}}</td>\r",
+											"        <td>{{response.balance}}</td>\r",
+											"        <td>{{response.username}}</td>\r",
+											"    </tr>\r",
+											"</table>\r",
+											"`;\r",
+											"\r",
+											"function constructVisualizerPayload() {\r",
+											"    return { response: pm.response.json() }\r",
+											"}\r",
+											"\r",
+											"pm.visualizer.set(template, constructVisualizerPayload());"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var Random_Email = pm.collectionVariables.replaceIn(\"{{$randomEmail}}\");\r",
+											"pm.collectionVariables.set(\"RandomEmail\",Random_Email);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{Token}}",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"contactId\": \"{{contactID_1}}\",\r\n  \"createdBy\": \"youssef\",\r\n  \"cost\": {{Cost}},\r\n  \"discountPercentage\": {{Discount}},\r\n  \"taxAmount\": {{Tax}},\r\n  \"username\": \"youssef200\",\r\n  \"status\":-1\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{Url}}/Invoices",
+									"host": [
+										"{{Url}}"
+									],
+									"path": [
+										"Invoices"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST Verify Paying an active Invoice",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response time is less than 3s\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+											"});\r",
+											"pm.test(\"Verify paying an active Invoice\", function () {\r",
+											"    pm.response.to.have.body(\"Invoice paid successfully.\");\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"invoiceId\": \"{{Invoice_ID}}\",\r\n  \"amount\": {{Total_Amount}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{Url}}/Invoices/pay",
+									"host": [
+										"{{Url}}"
+									],
+									"path": [
+										"Invoices",
+										"pay"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Verify Contact Balance After Paying Invoice",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = pm.response.json();\r",
+											"var Final_Balance = parseFloat(pm.collectionVariables.get(\"Final_Balance\"));\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 3s\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify Contact Balance After Paying the Invoice\", function () {\r",
+											"    pm.expect(jsonData.balance).to.eql(Final_Balance);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{Url}}/Contacts/{{contactID_1}}",
+									"host": [
+										"{{Url}}"
+									],
+									"path": [
+										"Contacts",
+										"{{contactID_1}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Verify Return Invoice After Paying",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response time is less than 3s\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+											"});\r",
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"pm.test(\"Verify Returning Invoice After Paying with PUT\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"Cannot return a paid invoice.\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{Token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{Url}}/Invoices/{{Invoice_ID}}",
+									"host": [
+										"{{Url}}"
+									],
+									"path": [
+										"Invoices",
+										"{{Invoice_ID}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "Url",
+			"value": "https://qa-assignment.sortcrm.com/api",
+			"type": "string"
+		},
+		{
+			"key": "Token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "contactID_1",
+			"value": ""
+		},
+		{
+			"key": "RandomEmail",
+			"value": ""
+		},
+		{
+			"key": "UserName",
+			"value": "youssef300",
+			"type": "string"
+		},
+		{
+			"key": "Password",
+			"value": "12345",
+			"type": "string"
+		},
+		{
+			"key": "Balance_Updated",
+			"value": "0",
+			"type": "string"
+		},
+		{
+			"key": "FirstName_Updated",
+			"value": "Mohamed",
+			"type": "string"
+		},
+		{
+			"key": "LastName_Updated",
+			"value": "Alaa",
+			"type": "string"
+		},
+		{
+			"key": "Phone_Updated",
+			"value": "1234567",
+			"type": "string"
+		},
+		{
+			"key": "Balance_Updated_2",
+			"value": "600",
+			"type": "string"
+		},
+		{
+			"key": "Cost",
+			"value": "90",
+			"type": "string"
+		},
+		{
+			"key": "Discount",
+			"value": "20",
+			"type": "string"
+		},
+		{
+			"key": "Tax",
+			"value": "10",
+			"type": "string"
+		},
+		{
+			"key": "Invoice_ID",
+			"value": ""
+		},
+		{
+			"key": "Total_Amount",
+			"value": ""
+		},
+		{
+			"key": "Profit",
+			"value": ""
+		},
+		{
+			"key": "Final_Balance",
+			"value": ""
+		}
+	]
+}
